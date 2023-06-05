@@ -18,7 +18,7 @@ class RegistrSerializer(serializers.Serializer):
     email = serializers.EmailField(required = True)
     password = serializers.CharField(min_length=4, required=True)
     password_confirm = serializers.CharField(min_length=4, required=True)
-    username = serializers.CharField(required = True)
+    name = serializers.CharField(required = True)
     last_name = serializers.CharField(required=False)
 
     # def validate_email(self, email):
