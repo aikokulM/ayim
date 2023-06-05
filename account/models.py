@@ -22,6 +22,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_superuser',True)
         return self._create(email, password, **extra_fields)
     
     
@@ -39,7 +40,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS= []
 
     def __str__(self) -> str:
-        return f'{self.id} -> {self.email}'
+        return f'{self.email}'
     
     
     def has_module_perms(self, app_label):
@@ -52,3 +53,4 @@ class User(AbstractUser):
     def create_activation_code(self):
         code = get_random_string(10)
         self.activation_code = code
+        # self.save()

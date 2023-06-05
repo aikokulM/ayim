@@ -1,8 +1,11 @@
 from rest_framework import serializers
-from .models import User
+# from .models import User
 # from .utils import send_activation_code
-from .tasks import send_activation_code_celery
+from .tasks import send_activation_code_celery, send_forgot_activation_code_celery
 from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 # class RegistrSerializer(serializers.ModelSerializer):
@@ -100,7 +103,8 @@ class ForgotPasswordSerializer(serializers.Serializer):
         email = self.validated_data.get('email')
         user = User.objects.get(email=email)
         user.create_activation_code()
-        send_mail('Восстановление пароля',f'Ваш код восстановления {user.activation_code}','test@gmail.com',[user.email])
+        user.save()
+        send_forgot_activation_code_celery.delay(user.email, user.activation_code)
     
 
 class ForgotPasswordCompleteSerializer(serializers.Serializer):
@@ -114,6 +118,8 @@ class ForgotPasswordCompleteSerializer(serializers.Serializer):
         code = data.get('code')
         password1 = data.get('password')
         password2 = data.get('password_confirm')
+
+
 
         if not User.objects.filter(email=email,activation_code = code).exists():
             raise serializers.ValidationError('Пользователь не найден')
