@@ -7,7 +7,7 @@ urlpatterns =[
     path('activate/<str:email>/<str:activation_code>', ActivationView.as_view(), name='activate'),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('forgot_pass/', ForgotPasswordView.as_view()),
+    path(' /', ForgotPasswordView.as_view()),
     path('forg_pas_con/', ForgotPasswordCompleteView.as_view()),
     path('change_pass/', ChangePasswordView.as_view()),
 ]
