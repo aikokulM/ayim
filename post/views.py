@@ -8,6 +8,7 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 
 from .serializers import CategorySerializer,PostSerialiser
 from .models import Category, Post
+from .permissions import IsAdminOrActivePermission, IsOwnerPermission
 
 class PermissionMixin:
     def get_permissions(self):
@@ -17,12 +18,12 @@ class PermissionMixin:
             permissions = [AllowAny]
         return [permission() for permission in permissions]
 
-class CategoryViewSet(PermissionMixin, ModelViewSet):
+class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
-class PostViewSet(PermissionMixin, ModelViewSet):
+class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerialiser
     filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
@@ -30,7 +31,14 @@ class PostViewSet(PermissionMixin, ModelViewSet):
     search_fields = ['title','created_at']
     ordering_fields = ['created_at', 'title']
 
-
+    def get_permissions(self):
+        if self.action in ['update', 'destroy', 'partial_update']:
+            self.permission_classes = [IsOwnerPermission]
+        elif self.action == 'create':
+            self.permission_classes = [IsAdminOrActivePermission]
+        elif self.action in ['list', 'retrive']:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
     # @action(methods=['POST'], detail=True)
     # def like(self, request, pk=None):
