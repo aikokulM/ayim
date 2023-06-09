@@ -16,9 +16,7 @@ class RegistSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         password_confirm  = attrs.pop('password_confirm')
         if password != password_confirm:
-            raise serializers.ValidationError(
-                'passwords not same'
-            )
+            raise serializers.ValidationError( 'passwords not same')
         return attrs
     
     def create(self, validated_data):
@@ -70,6 +68,7 @@ class ForgotPasswordCompleteSerializer(serializers.Serializer):
         user.activation_code = ''
         user.save()
 
+
 class ChangePasswordSerialazer(serializers.Serializer):     #мы наследуемся от потому что мы сами можем задавать поля
     old_password = serializers.CharField(min_length = 4, required=True)
     new_password = serializers.CharField(min_length = 4, required=True)
@@ -82,6 +81,7 @@ class ChangePasswordSerialazer(serializers.Serializer):     #мы наследу
             raise serializers.ValidationError('Вы ввели некорректный пароль')
         return old_password
     
+
     def validate(self, data):
         old_pass = data.get('old_password')
         new_pass = data.get('new_password')
@@ -91,6 +91,7 @@ class ChangePasswordSerialazer(serializers.Serializer):     #мы наследу
         if old_pass ==new_pass:
             raise serializers.ValidationError('Пароль должен отличаться от прошлых')
         return data
+    
     
     def set_new_password(self):
         new_pass = self.validated_data.get('new_password')

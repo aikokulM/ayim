@@ -1,6 +1,8 @@
 from rest_framework.serializers import ModelSerializer, ValidationError, ReadOnlyField
 from .models import Comment, Rating, Like, Favorites
 
+
+
 class CommentSerializer(ModelSerializer):
     author = ReadOnlyField(source = 'author.email')
 
@@ -13,6 +15,8 @@ class CommentSerializer(ModelSerializer):
         comment = Comment.objects.create(author = user, **validated_data)  # create не нужно сохронять, автомотически сохраняется. Обязательно нужно return
         return comment
 
+
+
 class RatingSerializer(ModelSerializer):
     author = ReadOnlyField(source = 'author.email')
     class Meta:
@@ -23,6 +27,7 @@ class RatingSerializer(ModelSerializer):
         if rating not in range(1, 6):
             raise ValidationError('rating must be in range 1-5')
         return rating
+    
     
     def validate_product(self, product):
         if self.Meta.model.objects.filter(product=product).exists():
@@ -35,6 +40,8 @@ class RatingSerializer(ModelSerializer):
         user = self.context.get('request').user
         rating = Rating.objects.create(author= user, **validated_data)
         return rating
+
+
 
 class LikeSerializer(ModelSerializer):
     author = ReadOnlyField(source='author.email')
@@ -49,6 +56,8 @@ class LikeSerializer(ModelSerializer):
         like= Like.objects.create(author = user, **validated_data)
         return like
     
+
+
 class FavoriteSerializer(ModelSerializer):
     author = ReadOnlyField(source='author.email')
     product = ReadOnlyField()

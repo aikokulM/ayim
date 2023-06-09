@@ -5,6 +5,9 @@ from .serializers import RegistSerializer, ForgotPasswordCompleteSerializer, For
 from rest_framework.response import Response
 from .models import User
 from .permissions import IsActivePermission
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -39,6 +42,7 @@ class ForgotPasswordCompleteView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
             return Response('password sucsessfully changed')
+
 
 class ChangePasswordView(APIView):
     permission_classes = (IsActivePermission,)

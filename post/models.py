@@ -16,6 +16,7 @@ class Category(models.Model):
             self.slug = slugify(self.title)
         super().save()
 
+
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,related_name='posts', verbose_name='Автор')
     title = models.CharField(max_length=120)
@@ -28,3 +29,8 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.author.name}  -> {self.title}'
+    
+
+class PostImages(models.Model):
+    hotel = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='images')
+    image = models.ImageField()
